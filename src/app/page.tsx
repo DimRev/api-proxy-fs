@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { LatestPost } from "~/app/_components/post";
 import { api, HydrateClient } from "~/trpc/server";
+import SearchTest from "./_components/search";
 
 export default async function Home() {
   const hello = await api.post.hello({ text: "from tRPC" });
@@ -46,6 +47,7 @@ export default async function Home() {
           </div>
 
           <LatestPost />
+          <SearchTest />
         </div>
       </main>
     </HydrateClient>

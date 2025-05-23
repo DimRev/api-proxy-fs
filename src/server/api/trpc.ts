@@ -9,6 +9,8 @@
 import { initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
+import Axios, { AxiosError } from "axios";
+import { env } from "~/env";
 
 /**
  * 1. CONTEXT
@@ -23,8 +25,13 @@ import { ZodError } from "zod";
  * @see https://trpc.io/docs/server/context
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
+  const axiosInstance = Axios.create({
+    baseURL: env.BASE_API_URL,
+  });
+
   return {
     ...opts,
+    axios: axiosInstance,
   };
 };
 
@@ -44,6 +51,7 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
         ...shape.data,
         zodError:
           error.cause instanceof ZodError ? error.cause.flatten() : null,
+        axiosError: error.cause instanceof AxiosError ? error.cause : null,
       },
     };
   },

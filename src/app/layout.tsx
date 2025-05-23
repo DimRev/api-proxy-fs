@@ -4,6 +4,7 @@ import { type Metadata } from "next";
 import { Geist } from "next/font/google";
 
 import { TRPCReactProvider } from "~/trpc/react";
+import SearchHistoryList from "~/features/search/components/SearchHistoryList";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -22,7 +23,14 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geist.variable}`}>
       <body>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <div className="flex h-dvh w-dvw flex-col overflow-hidden bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
+          <TRPCReactProvider>
+            <main className="flex h-full grow justify-between">
+              <div className="h-full grow">{children}</div>
+              <SearchHistoryList />
+            </main>
+          </TRPCReactProvider>
+        </div>
       </body>
     </html>
   );

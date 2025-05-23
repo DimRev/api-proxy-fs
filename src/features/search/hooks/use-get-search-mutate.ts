@@ -1,6 +1,6 @@
 import { api } from "~/trpc/react";
 
-export function useGetSearchQuery() {
+export function useGetSearchMutate() {
   const context = api.useUtils();
   return api.search.get.useMutation({
     onSuccess: () => {

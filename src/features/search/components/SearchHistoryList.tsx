@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useGetSearchHistoryQuery } from "../hooks/use-get-search-history-query";
 import type { QueryHistoryEntry } from "../interfaces/search.interface";
 import {
@@ -20,6 +20,7 @@ function SearchHistoryList({ className }: Props) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pageSize, _setPageSize] = useState(10);
   const router = useRouter();
+  const scrollableContainerRef = useRef<HTMLDivElement>(null);
 
   const {
     data: searchHistoryData,
@@ -36,12 +37,20 @@ function SearchHistoryList({ className }: Props) {
   function handleNextPage() {
     if (searchHistoryData && page < searchHistoryData.totalPages) {
       setPage(page + 1);
+      scrollToTop();
     }
   }
 
   function handlePrevPage() {
     if (page > 1) {
       setPage(page - 1);
+      scrollToTop();
+    }
+  }
+
+  function scrollToTop() {
+    if (scrollableContainerRef.current) {
+      scrollableContainerRef.current.scrollTo({ top: 0, behavior: "smooth" });
     }
   }
 
@@ -62,7 +71,7 @@ function SearchHistoryList({ className }: Props) {
         Search History
       </h2>
 
-      <div className="grow overflow-y-auto pr-1">
+      <div ref={scrollableContainerRef} className="grow overflow-y-auto pr-1">
         {isSearchHistoryLoading && (
           <div className="space-y-3">{renderSkeletons()}</div>
         )}

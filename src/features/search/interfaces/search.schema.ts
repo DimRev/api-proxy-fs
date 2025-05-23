@@ -1,10 +1,10 @@
 import { z } from "zod";
 
-export const getSearchMutateSchema = z.object({
+export const getSearchQuerySchema = z.object({
   query: z.string().min(1, "Query is required"),
 });
 
-export type GetSearchMutateSchema = z.infer<typeof getSearchMutateSchema>;
+export type GetSearchQuerySchema = z.infer<typeof getSearchQuerySchema>;
 
 export const postSearchMutateSchema = z.object({
   query: z.string().min(1, "Query is required"),

@@ -1,16 +1,18 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { cn, debounce } from "~/lib/utils";
-import { useGetSearchMutate } from "../hooks/use-get-search-mutate";
+import { usePostSearchMutate } from "../hooks/use-post-search-mutate";
+import SearchResultItem from "./SearchResultItem";
+import { Input } from "~/shared/components/ui/input";
 
 type Props = {
   className?: string;
   currentQuery: string;
 };
 
-function SearchResults({ className, currentQuery }: Props) {
+function SearchResultListPost({ className, currentQuery }: Props) {
   const searchParams = useSearchParams();
   const displayQuery = useMemo(
     () => searchParams.get("q") ?? "",
@@ -24,10 +26,11 @@ function SearchResults({ className, currentQuery }: Props) {
     error: errorSearchResults,
     mutateAsync: getSearchResults,
     reset: resetMutationState,
-  } = useGetSearchMutate();
+  } = usePostSearchMutate();
 
   const initiatedQueryRef = useRef<string | null>(null);
   const debounceTimeout = 300;
+  const [highlightTerm, setHighlightTerm] = useState("");
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedFetch = useCallback(
@@ -126,26 +129,31 @@ function SearchResults({ className, currentQuery }: Props) {
 
     return (
       <div className={cn("space-y-4", className)}>
-        <h2 className="text-xl font-semibold text-white">
-          Search Results for:{" "}
-          <span className="text-pink-400">{displayQuery}</span>
-        </h2>
+        <div className="flex items-center justify-between">
+          <h2 className="w-full grow text-xl font-semibold text-white">
+            Search Results for:{" "}
+            <span className="text-pink-400">{displayQuery}</span>
+          </h2>
+          <div className="flex w-fit items-center gap-4 text-xl">
+            <h2>Highlight: </h2>
+            <Input
+              className="min-w-[200px]"
+              placeholder="Enter a term"
+              value={highlightTerm}
+              onChange={(e) => setHighlightTerm(e.target.value)}
+            />
+          </div>
+        </div>
         <ul className="space-y-3">
-          {actualSearchResults.map((result, idx) => (
-            <li
-              key={result.url || idx} // Ensure a stable key
-              className="rounded-md border border-gray-700 bg-gray-800/60 p-3"
-            >
-              <a
-                href={result.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-purple-300 hover:text-purple-200 hover:underline"
-              >
-                {result.title}
-              </a>
-            </li>
-          ))}
+          {actualSearchResults.map((result, idx) => {
+            return (
+              <SearchResultItem
+                result={result}
+                highlightTerm={highlightTerm}
+                key={result.url + idx}
+              />
+            );
+          })}
         </ul>
       </div>
     );
@@ -174,4 +182,4 @@ function SearchResults({ className, currentQuery }: Props) {
   );
 }
 
-export default SearchResults;
+export default SearchResultListPost;

@@ -1,11 +1,12 @@
 "use client";
 
+import { Home } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import SearchInput from "~/features/search/components/SearchInput";
-import SearchResults from "~/features/search/components/SearchResults";
-import { Home } from "lucide-react";
+// import SearchResultList from "~/features/search/components/SearchResultList";
+import SearchResultListPost from "~/features/search/components/SearchResultListPost";
 import { buttonVariants } from "~/shared/components/ui/button";
 
 export default function SearchPage() {
@@ -30,10 +31,15 @@ export default function SearchPage() {
   return (
     <div className="relative flex h-full w-full flex-col">
       <SearchInput className="shrink px-12 py-4" initialValue={initialQuery} />
-      <SearchResults
+      {/* <SearchResultList
+        className="w-full grow overflow-y-auto px-4"
+        currentQuery={initialQuery}
+      /> */}
+      <SearchResultListPost
         className="w-full grow overflow-y-auto px-4"
         currentQuery={initialQuery}
       />
+
       <div className="absolute end-0 bottom-0 p-4">
         <Link
           href="/"

@@ -4,7 +4,7 @@ import type {
 } from "~/features/search/interfaces/search.interface";
 import {
   getSearchHistoryQuerySchema,
-  getSearchMutateSchema,
+  getSearchQuerySchema,
 } from "~/features/search/interfaces/search.schema";
 import { AXIOS_ROUTER } from "~/lib/axios";
 import { trpcCatchAndParseError } from "~/lib/trpc";
@@ -12,8 +12,8 @@ import { createTRPCRouter, publicProcedure } from "../trpc";
 
 export const searchRouter = createTRPCRouter({
   get: publicProcedure
-    .input(getSearchMutateSchema)
-    .mutation(async ({ input, ctx }) => {
+    .input(getSearchQuerySchema)
+    .query(async ({ input, ctx }) => {
       try {
         const res = await ctx.axios.get<SearchResult[]>(
           AXIOS_ROUTER.V1.SEARCH.DEFAULT,
@@ -29,7 +29,7 @@ export const searchRouter = createTRPCRouter({
       }
     }),
   post: publicProcedure
-    .input(getSearchMutateSchema)
+    .input(getSearchQuerySchema)
     .mutation(async ({ input, ctx }) => {
       try {
         const res = await ctx.axios.post<SearchResult[]>(

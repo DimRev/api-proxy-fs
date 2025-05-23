@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useGetSearchHistoryQuery } from "../hooks/use-get-search-history-query";
 import type { QueryHistoryEntry } from "../interfaces/search.interface";
 import {
@@ -10,6 +10,7 @@ import {
 import { Button } from "~/shared/components/ui/button";
 import { cn } from "~/lib/utils";
 import { useRouter } from "next/navigation";
+import { Input } from "~/shared/components/ui/input";
 
 type Props = {
   className?: string;
@@ -17,8 +18,10 @@ type Props = {
 
 function SearchHistoryList({ className }: Props) {
   const [page, setPage] = useState(1);
+  const [dispPage, setDispPage] = useState("1");
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pageSize, _setPageSize] = useState(10);
+  const [isClient, setIsClient] = useState(false);
   const router = useRouter();
   const scrollableContainerRef = useRef<HTMLDivElement>(null);
 
@@ -30,6 +33,10 @@ function SearchHistoryList({ className }: Props) {
     isFetching: isSearchHistoryFetching,
   } = useGetSearchHistoryQuery({ page, pageSize });
 
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   function handleItemClick(item: QueryHistoryEntry) {
     router.push(`/search?q=${encodeURIComponent(item.query)}`);
   }
@@ -37,6 +44,7 @@ function SearchHistoryList({ className }: Props) {
   function handleNextPage() {
     if (searchHistoryData && page < searchHistoryData.totalPages) {
       setPage(page + 1);
+      setDispPage(`${page + 1}`);
       scrollToTop();
     }
   }
@@ -44,6 +52,7 @@ function SearchHistoryList({ className }: Props) {
   function handlePrevPage() {
     if (page > 1) {
       setPage(page - 1);
+      setDispPage(`${page - 1}`);
       scrollToTop();
     }
   }
@@ -58,6 +67,28 @@ function SearchHistoryList({ className }: Props) {
     return Array.from({ length: pageSize }).map((_, index) => (
       <SearchHistoryItemSkeleton key={`skeleton-${index}`} />
     ));
+  }
+
+  function handlePageInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    if (isNaN(Number(e.target.value))) {
+      return;
+    }
+    setDispPage(e.target.value);
+  }
+
+  function handlePageNav() {
+    if (
+      searchHistoryData &&
+      !isNaN(Number(dispPage)) &&
+      +dispPage > 0 &&
+      +dispPage <= searchHistoryData.totalPages &&
+      +dispPage !== page
+    ) {
+      setPage(+dispPage);
+      scrollToTop();
+      return;
+    }
+    setDispPage(page.toString());
   }
 
   return (
@@ -146,9 +177,26 @@ function SearchHistoryList({ className }: Props) {
               >
                 Previous
               </Button>
-              <span className="text-muted-foreground px-2 text-xs">
-                Page {searchHistoryData.currentPage} of{" "}
-                {searchHistoryData.totalPages}
+              <span className="text-muted-foreground flex items-center gap-1 px-2 text-xs">
+                <span>Page</span>
+                {isClient ? (
+                  <div className="relative w-12">
+                    <Input
+                      value={dispPage}
+                      onChange={handlePageInputChange}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          handlePageNav();
+                        }
+                      }}
+                      onBlur={handlePageNav}
+                      className="h-7 w-full rounded border-gray-500 bg-gray-700 px-2 py-1 text-center text-xs font-bold text-purple-300 focus:border-purple-500 focus:ring-0"
+                    />
+                  </div>
+                ) : (
+                  <span>{dispPage}</span>
+                )}
+                <span>of {searchHistoryData.totalPages}</span>
               </span>
               <Button
                 variant="outline"

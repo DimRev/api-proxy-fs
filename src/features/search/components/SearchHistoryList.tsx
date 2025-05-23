@@ -8,11 +8,18 @@ import {
   SearchHistoryItemSkeleton,
 } from "./SearchHistoryItem";
 import { Button } from "~/shared/components/ui/button";
+import { cn } from "~/lib/utils";
+import { useRouter } from "next/navigation";
 
-function SearchHistoryList() {
+type Props = {
+  className?: string;
+};
+
+function SearchHistoryList({ className }: Props) {
   const [page, setPage] = useState(1);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pageSize, _setPageSize] = useState(10);
+  const router = useRouter();
 
   const {
     data: searchHistoryData,
@@ -22,10 +29,8 @@ function SearchHistoryList() {
     isFetching: isSearchHistoryFetching,
   } = useGetSearchHistoryQuery({ page, pageSize });
 
-  console.log("SearchHistoryList data:", searchHistoryData);
-
   function handleItemClick(item: QueryHistoryEntry) {
-    console.log("Clicked history item:", item);
+    router.push(`/search?q=${encodeURIComponent(item.query)}`);
   }
 
   function handleNextPage() {
@@ -47,7 +52,12 @@ function SearchHistoryList() {
   }
 
   return (
-    <div className="flex h-full flex-col border-l border-gray-600 bg-gray-800/50 p-4 shadow-lg md:w-[300px] lg:w-[350px]">
+    <div
+      className={cn(
+        "flex h-full flex-col border-l border-gray-600 bg-gray-800/50 p-4 shadow-lg md:w-[300px] lg:w-[350px]",
+        className,
+      )}
+    >
       <h2 className="mb-4 shrink-0 text-center text-xl font-semibold text-white">
         Search History
       </h2>
@@ -95,7 +105,6 @@ function SearchHistoryList() {
       <div className="mt-auto shrink-0 border-t border-gray-600 pt-4">
         <div className="flex items-center justify-between">
           {isSearchHistoryLoading ? (
-            // Pagination placeholder during loading
             <>
               <Button
                 variant="outline"

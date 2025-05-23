@@ -26,8 +26,8 @@ export default function RootLayout({
         <div className="flex h-dvh w-dvw flex-col overflow-hidden bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
           <TRPCReactProvider>
             <main className="flex h-full grow justify-between">
-              <div className="h-full grow">{children}</div>
-              <SearchHistoryList />
+              <div className="h-full flex-9/12">{children}</div>
+              <SearchHistoryList className="flex-3/12" />
             </main>
           </TRPCReactProvider>
         </div>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import type { QueryHistoryEntry } from "../interfaces/search.interface";
 import { cn } from "~/lib/utils";
@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "~/shared/components/ui/card";
 import { Skeleton } from "~/shared/components/ui/skeleton";
+import { relativeDateString } from "~/lib/date";
 
 interface SearchHistoryItemPreviewProps {
   item: QueryHistoryEntry;
@@ -22,7 +23,22 @@ export function SearchHistoryItemPreview({
   onClick,
   className,
 }: SearchHistoryItemPreviewProps) {
-  const formattedTimestamp = new Date(item.timestamp).toLocaleString();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  const displayTimestamp = useMemo(() => {
+    if (!isClient) {
+      return new Date(item.timestamp).toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+    }
+    return relativeDateString(new Date(item.timestamp).getTime());
+  }, [item.timestamp, isClient]);
 
   return (
     <Card
@@ -42,7 +58,7 @@ export function SearchHistoryItemPreview({
       <CardHeader className="pt-4 pb-2">
         <CardTitle className="text-lg text-purple-300">{item.query}</CardTitle>
         <CardDescription className="text-purple-200">
-          Searched on: {formattedTimestamp}
+          Searched: {displayTimestamp}
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-0 pb-4">

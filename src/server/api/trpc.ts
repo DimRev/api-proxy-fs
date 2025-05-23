@@ -12,6 +12,19 @@ import { ZodError } from "zod";
 import Axios, { AxiosError } from "axios";
 import { env } from "~/env";
 
+const colors = {
+  reset: "\x1b[0m",
+  green: "\x1b[32m",
+  red: "\x1b[31m",
+  yellow: "\x1b[33m",
+  blue: "\x1b[34m",
+  magenta: "\x1b[35m",
+  gray: "\x1b[90m",
+  white: "\x1b[37m",
+  purple: "\x1b[35m",
+  next_purple: "\x1b[38;5;93m",
+};
+
 /**
  * 1. CONTEXT
  *
@@ -96,7 +109,14 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
   const result = await next();
 
   const end = Date.now();
-  console.log(`[TRPC] ${path} took ${end - start}ms to execute`);
+  const duration = end - start;
+
+  const timestamp = new Date().toISOString();
+  const logMessage = `${colors.green}[${path}]${colors.reset} ${colors.next_purple}OK took: ${duration}ms${colors.reset}`;
+
+  console.log(
+    `${colors.gray}${timestamp}${colors.reset} | ${colors.green}[LOG]${colors.reset}${colors.gray}[PID ${process.pid}]${colors.reset}: ${logMessage}`,
+  );
 
   return result;
 });

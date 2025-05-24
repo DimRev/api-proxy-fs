@@ -1,9 +1,9 @@
 "use client";
 import React, { useMemo } from "react";
-import type { SearchResult } from "@repo/interfaces";
+import type { SearchResultResponse } from "@repo/interfaces";
 
 type Props = {
-  result: SearchResult;
+  result: SearchResultResponse;
   highlightTerm: string;
 };
 

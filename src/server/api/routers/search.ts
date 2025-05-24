@@ -1,5 +1,8 @@
 import type {
+  GetHistoryRequestParams,
+  GetSearchRequestParams,
   PaginatedQueryHistoryResponse,
+  PostSearchRequestBody,
   SearchResultResponse,
 } from "@repo/interfaces";
 import {
@@ -15,12 +18,14 @@ export const searchRouter = createTRPCRouter({
     .input(getSearchQuerySchema)
     .query(async ({ input, ctx }) => {
       try {
+        const params: GetSearchRequestParams = {
+          q: input.query,
+        };
+
         const res = await ctx.axios.get<SearchResultResponse[]>(
           AXIOS_ROUTER.V1.SEARCH.DEFAULT,
           {
-            params: {
-              q: input.query,
-            },
+            params,
           },
         );
         return res.data;
@@ -31,10 +36,14 @@ export const searchRouter = createTRPCRouter({
   post: publicProcedure
     .input(getSearchQuerySchema)
     .mutation(async ({ input, ctx }) => {
+      const body: PostSearchRequestBody = {
+        query: input.query,
+      };
+
       try {
         const res = await ctx.axios.post<SearchResultResponse[]>(
           AXIOS_ROUTER.V1.SEARCH.DEFAULT,
-          input,
+          body,
         );
 
         return res.data;
@@ -53,13 +62,15 @@ export const searchRouter = createTRPCRouter({
         if (input.page) page = input.page;
         if (input.pageSize) pageSize = input.pageSize;
 
+        const params: GetHistoryRequestParams = {
+          page,
+          pageSize,
+        };
+
         const res = await ctx.axios.get<PaginatedQueryHistoryResponse>(
           AXIOS_ROUTER.V1.SEARCH.HISTORY,
           {
-            params: {
-              page,
-              pageSize,
-            },
+            params,
           },
         );
 

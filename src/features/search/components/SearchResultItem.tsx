@@ -13,7 +13,12 @@ function SearchResultItem({ result, highlightTerm }: Props) {
       return [{ text: result.title, highlighted: false }];
     }
 
-    const regex = new RegExp(`(${highlightTerm})`, "gi");
+    const escapedHighlightTerm = highlightTerm.replace(
+      /[-\/\\^$*+?.()|[\]{}]/g,
+      "\\$&",
+    );
+
+    const regex = new RegExp(`(${escapedHighlightTerm})`, "gi");
     const splitTitle = result.title.split(regex);
 
     return splitTitle.map((text) => {

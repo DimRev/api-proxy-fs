@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 
-import type { QueryHistoryEntry } from "../interfaces/search.interface";
+import type { QueryHistoryEntry } from "@repo/interfaces";
 import { cn } from "~/lib/utils";
 import {
   Card,

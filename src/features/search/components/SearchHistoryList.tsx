@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useGetSearchHistoryQuery } from "../hooks/use-get-search-history-query";
-import type { QueryHistoryEntry } from "../interfaces/search.interface";
+import type { QueryHistoryEntry } from "@repo/interfaces";
 import {
   SearchHistoryItemPreview,
   SearchHistoryItemSkeleton,

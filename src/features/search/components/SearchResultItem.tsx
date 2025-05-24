@@ -1,6 +1,6 @@
 "use client";
 import React, { useMemo } from "react";
-import type { SearchResult } from "../interfaces/search.interface";
+import type { SearchResult } from "@repo/interfaces";
 
 type Props = {
   result: SearchResult;
@@ -26,12 +26,12 @@ function SearchResultItem({ result, highlightTerm }: Props) {
   }, [highlightTerm, result.title]);
 
   return (
-    <li className="rounded-md border border-gray-700 bg-gray-800/60 p-3">
+    <li className="group rounded-md border border-gray-700 bg-gray-800/60 p-3 hover:bg-gray-400/60">
       <a
         href={result.url}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-purple-300 hover:text-purple-200 hover:underline"
+        className="text-purple-300 group-hover:text-purple-200 hover:underline"
       >
         {parts.map((part, index) =>
           part.highlighted ? (

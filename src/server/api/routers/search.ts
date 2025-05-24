@@ -1,7 +1,4 @@
-import type {
-  PaginatedQueryHistory,
-  SearchResult,
-} from "~/features/search/interfaces/search.interface";
+import type { PaginatedQueryHistory, SearchResult } from "@repo/interfaces";
 import {
   getSearchHistoryQuerySchema,
   getSearchQuerySchema,

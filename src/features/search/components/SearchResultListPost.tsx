@@ -6,6 +6,7 @@ import { cn, debounce } from "~/lib/utils";
 import { usePostSearchMutate } from "../hooks/use-post-search-mutate";
 import SearchResultItem from "./SearchResultItem";
 import { Input } from "~/shared/components/ui/input";
+import Loader from "~/shared/components/Loader";
 
 type Props = {
   className?: string;
@@ -97,8 +98,10 @@ function SearchResultListPost({ className, currentQuery }: Props) {
     initiatedQueryRef.current === currentQueryTrimmed
   ) {
     return (
-      <div className={cn("pt-10 text-center text-gray-400", className)}>
-        Loading search results for {`"${displayQuery}"`}...
+      <div className={cn("", className)}>
+        <Loader
+          loadingText={`Loading search results for "${displayQuery}"...`}
+        />
       </div>
     );
   }
@@ -167,17 +170,21 @@ function SearchResultListPost({ className, currentQuery }: Props) {
     !actualSearchResults
   ) {
     return (
-      <div className={cn("pt-10 text-center text-gray-400", className)}>
-        Preparing to search for {`"${displayQuery}"`}...
+      <div className={cn("", className)}>
+        <Loader loadingText={`Preparing to search for "${displayQuery}"...`} />
       </div>
     );
   }
 
   return (
-    <div className={cn("pt-10 text-center text-gray-400", className)}>
-      {displayQuery
-        ? `Search results for "${displayQuery}" will appear here.`
-        : "Enter a query to see results."}
+    <div className={cn("", className)}>
+      {displayQuery ? (
+        <Loader
+          loadingText={`Search results for "${displayQuery}" will appear here.`}
+        />
+      ) : (
+        "Enter a query to see results."
+      )}
     </div>
   );
 }

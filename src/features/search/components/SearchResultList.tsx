@@ -6,6 +6,7 @@ import { cn } from "~/lib/utils";
 import { useGetSearchQuery } from "../hooks/use-get-search-query";
 import { Input } from "~/shared/components/ui/input";
 import SearchResultItem from "./SearchResultItem";
+import Loader from "~/shared/components/Loader";
 
 type Props = {
   className?: string;
@@ -42,7 +43,9 @@ function SearchResultList({ className, currentQuery }: Props) {
   if (isPendingSearchResults) {
     return (
       <div className={cn("pt-10 text-center text-gray-400", className)}>
-        <h2>Loading search results for {`"${displayQuery}"`}...</h2>
+        <Loader
+          loadingText={`Loading search results for "${displayQuery}"...`}
+        />
       </div>
     );
   }
@@ -106,17 +109,21 @@ function SearchResultList({ className, currentQuery }: Props) {
     !actualSearchResults
   ) {
     return (
-      <div className={cn("pt-10 text-center text-gray-400", className)}>
-        <h2>Preparing to search for {`"${displayQuery}"`}...</h2>
+      <div className={cn("", className)}>
+        <Loader loadingText={`Preparing to search for "${displayQuery}"...`} />
       </div>
     );
   }
 
   return (
-    <div className={cn("pt-10 text-center text-gray-400", className)}>
-      {displayQuery
-        ? `Search results for "${displayQuery}" will appear here.`
-        : "Enter a query to see results."}
+    <div className={cn("", className)}>
+      {displayQuery ? (
+        <Loader
+          loadingText={`Search results for "${displayQuery}" will appear here.`}
+        />
+      ) : (
+        "Enter a query to see results."
+      )}
     </div>
   );
 }
